@@ -11,11 +11,13 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildVoiceStates,
     ],
     partials: [Partials.Channel],
 });
 
 client.commands = new Collection();
+client.voiceGenerator = new Collection();
 
 
 // Load commands and events. ('ready' event send the commands to the discord server)
