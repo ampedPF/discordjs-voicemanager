@@ -1,7 +1,11 @@
 # discordjs-voicemanager
 
-- Create a bot on https://discord.com/developers/applications with `Presence Intent`, `Server Members Intent`, `Message Content Intent`  
-(scopes yet to be determined so give it the "Admin" scope for the time being)
+- Create a bot on https://discord.com/developers/applications  
+- In General Information, make sure to enable `Presence Intent`, `Server Members Intent`, `Message Content Intent`
+
+- In OAuth2 tab, select `bot` scope with `Administrator` bot permissions then invite bot to your discord server using the generated link.  
+e.g. https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=8&scope=bot  
+(change CLIENT_ID with your bot Application ID)
 
 - Get your Guild ID by right-clicking on your discord server (Make sure you have developer's mode enabled in `Settings > App Settings > Advanced`)
 
