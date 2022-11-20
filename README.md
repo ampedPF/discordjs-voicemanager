@@ -1,7 +1,8 @@
 # discordjs-voicemanager
 
-- Create a bot on https://discord.com/developers/applications  
-- In General Information, make sure to enable `Presence Intent`, `Server Members Intent`, `Message Content Intent`
+- Create an application on https://discord.com/developers/applications  
+
+- In Bot tab, after enabling the bot and reseting the token, make sure to also enable `Presence Intent`, `Server Members Intent`, `Message Content Intent`.
 
 - In OAuth2 tab, select `bot` scope with `Administrator` bot permissions then invite bot to your discord server using the generated link.  
 e.g. https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=8&scope=bot  
