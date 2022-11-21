@@ -14,6 +14,7 @@ const buttonBuilderData = new ButtonBuilder()
  * @param {CommandInteraction} interaction 
  */
 const buttonFunction = async (client, interaction) => {
+    channelNameChangeModal.data.components[0].components[0].data.placeholder = interaction.member.voice.channel.name;
     await interaction.showModal(channelNameChangeModal.data);
 }
 
