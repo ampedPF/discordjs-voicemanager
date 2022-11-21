@@ -24,6 +24,12 @@ module.exports = {
             if (!button) return interaction.reply('This button does not exist.');
     
             button.execute(client, interaction);
+        } else if (interaction.isModalSubmit()) {
+            const modal = client.modals.get(interaction.customId);
+            
+            if (!modal) return interaction.reply('This modal does not exist.');
+    
+            modal.execute(client, interaction);
         }
     },
 };

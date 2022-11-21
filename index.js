@@ -18,6 +18,7 @@ const client = new Client({
 
 client.commands = new Collection();
 client.buttons = new Collection();
+client.modals = new Collection();
 client.voiceGenerator = new Collection();
 
 

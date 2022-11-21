@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
-const { setChannelAccess } = require("../../functions/VoiceUtil");
+const { setChannelAccess, setChannelName } = require("../../functions/VoiceUtil");
 
 
 const slashCommandData = new SlashCommandBuilder()
@@ -142,19 +142,8 @@ const slashCommandData = new SlashCommandBuilder()
                 }
                 break;
                 case "name": {
-                    const oldName = voiceChannel.name;
                     const newName = options.getString("text");
-                    if (newName != oldName) {                            
-                        voiceChannel.edit({ name: newName })
-                            .then(vc => {
-                                console.log(`${interaction.user.tag} has changed the channel name from "${oldName}" to "${newName}".`)
-                                interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")], ephemeral: true });
-                            })
-                            .catch(console.error);
-                    } else {
-                        console.log(`${interaction.user.tag} tried to change the channel name but it was already set to "${oldName}".`)
-                        interaction.reply({ embeds: [createEmbed(`Channel name already set to \`${oldSoldNamelots}\`.`, "Red")], ephemeral: true });
-                    }
+                    setChannelName(interaction, newName);
                 }
                 break;
                 case "userlimit": {

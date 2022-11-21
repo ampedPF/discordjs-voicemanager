@@ -3,8 +3,8 @@ const { setChannelAccess } = require("../../functions/VoiceUtil");
 
 
 const buttonBuilderData = new ButtonBuilder()
-    .setCustomId('setChannelAccessPrivate')
-    .setLabel("Private")
+    .setCustomId('channelAccessPublicButton')
+    .setLabel("Public")
     .setStyle(ButtonStyle.Primary);
 
                                     
@@ -14,7 +14,7 @@ const buttonBuilderData = new ButtonBuilder()
  * @param {CommandInteraction} interaction 
  */
 const buttonFunction = async (client, interaction) => {
-    setChannelAccess(interaction, false);
+    setChannelAccess(interaction, null);
 }
 
 

@@ -43,20 +43,32 @@ module.exports = {
                     { id: guild.id, deny: [PermissionFlagsBits.Connect] }
                 ]
             });
-
+            
             client.voiceGenerator.set(member.id, voiceChannel.id);
-            
-            const buttons = [...client.buttons.values()].map(b => b.data);
-            
-            voiceChannel.send({
-                components: [new ActionRowBuilder().addComponents(buttons)]
-            });
             
             await newChannel.permissionOverwrites.edit(member, { Connect: false });
             setTimeout(() => newChannel.permissionOverwrites.delete(member), 30 * 1000);
             
             console.log(`Voice channel ${voiceChannel.name} created by ${member.user.tag}.`);
             setTimeout(() => member.voice.setChannel(voiceChannel), 500);
+
+            //const buttons = [...client.buttons.values()].map(b => b.data);
+            //console.log("buttons:", [...client.buttons.filter(b => b.key.includes("ChannelAccess"))]);
+
+
+            const accessButtons = [...client.buttons.keys()]
+                                    .filter((key) => key.includes('channelAccess'))
+                                    .map(set => client.buttons.get(set).data);
+            
+            voiceChannel.send( {
+                content: "> Change channel access",
+                components: [new ActionRowBuilder().addComponents(accessButtons)]
+            });
+            
+            voiceChannel.send( {
+                content: "> Change channel name",
+                components: [new ActionRowBuilder().addComponents(client.buttons.get("channelNameChangeButton").data)]
+            });
         }
         
         //////////////////////////////////////////////////////////////////
