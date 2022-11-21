@@ -17,11 +17,12 @@ const client = new Client({
 });
 
 client.commands = new Collection();
+client.buttons = new Collection();
 client.voiceGenerator = new Collection();
 
 
 // Load commands and events. ('ready' event send the commands to the discord server)
-['CommandUtil', 'EventUtil'].forEach(handler => require(path.join(appRoot, "handlers", handler))(client));
+['CommandUtil', 'ComponentUtil', 'EventUtil'].forEach(handler => require(path.join(appRoot, "handlers", handler))(client));
 
 
 // Handle process errors

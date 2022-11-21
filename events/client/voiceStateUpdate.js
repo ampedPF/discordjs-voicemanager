@@ -1,4 +1,4 @@
-const { Events, VoiceState, ChannelType, PermissionFlagsBits } = require("discord.js");
+const { Events, VoiceState, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
 const joinToCreateChannelIds = process.env.JOIN_TO_CREATE_CHANNEL_IDS.split(" ");
 
 
@@ -45,6 +45,12 @@ module.exports = {
             });
 
             client.voiceGenerator.set(member.id, voiceChannel.id);
+            
+            const buttons = [...client.buttons.values()].map(b => b.data);
+            
+            voiceChannel.send({
+                components: [new ActionRowBuilder().addComponents(buttons)]
+            });
             
             await newChannel.permissionOverwrites.edit(member, { Connect: false });
             setTimeout(() => newChannel.permissionOverwrites.delete(member), 30 * 1000);

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
+const { setChannelAccess } = require("../../functions/VoiceUtil");
 
 
 const slashCommandData = new SlashCommandBuilder()
@@ -87,7 +88,6 @@ const slashCommandData = new SlashCommandBuilder()
             switch(subCommand){
                 case "allow": {
                     const targetMember = options.getMember("member");
-                    
                     voiceChannel.permissionOverwrites.edit(targetMember.id, { Connect: true })
                         .then(vc => {
                             console.log(`${interaction.user.tag} has granted ${targetMember.user.tag} access to channel "${voiceChannel.name}".`)
@@ -131,21 +131,11 @@ const slashCommandData = new SlashCommandBuilder()
                     const turnChoice = options.getString("turn");
                     switch(turnChoice) {
                         case "private": {
-                            voiceChannel.permissionOverwrites.edit(guild.id, { Connect: false })
-                                .then(vc => {
-                                    console.log(`${interaction.user.tag} has made channel "${voiceChannel.name}" private.`)
-                                    interaction.reply({ embeds: [createEmbed("This channel is now private.", "Green")], ephemeral: true  });
-                                })
-                                .catch(console.error);
+                            setChannelAccess(interaction, false);
                         }
                         break;
                         case "public": {
-                            voiceChannel.permissionOverwrites.edit(guild.id, { Connect: null })
-                                .then(vc => {
-                                    console.log(`${interaction.user.tag} has made channel "${voiceChannel.name}" public.`)
-                                    interaction.reply({ embeds: [createEmbed("This channel is now public.", "Green")], ephemeral: true  });
-                                })
-                                .catch(console.error);
+                            setChannelAccess(interaction, null);
                         }
                         break;
                     }
