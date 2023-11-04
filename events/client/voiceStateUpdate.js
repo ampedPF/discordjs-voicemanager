@@ -1,5 +1,6 @@
 const { Events, VoiceState, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
 const { generateName } = require("../../functions/NameUtil");
+const { getName } = require("../../functions/VoiceUtil");
 const joinToCreateChannelIds = process.env.JOIN_TO_CREATE_CHANNEL_IDS.split(" ");
 const moderatorsRoleId = process.env.MODERATORS_ROLE_ID;
 
@@ -31,7 +32,7 @@ module.exports = {
         if (ownedChannelId && oldChannel.id == ownedChannelId && (!newChannel || newChannel.id !== ownedChannelId)) {
             client.voiceGenerator.set(member.id, null);
             oldChannel.delete().catch((err) => { console.log(err)} );
-            console.log(`Voice channel "${oldChannel.name}" created by ${member.displayName} (${member.user.username}) has been deleted.`);
+            console.log(`Voice channel "${oldChannel.name}" created by ${getName(member)} (${member.user.username}) has been deleted.`);
         }
         
         // Create owned channel
@@ -61,7 +62,7 @@ module.exports = {
             await newChannel.permissionOverwrites.edit(member, { Connect: false });
             setTimeout(() => newChannel.permissionOverwrites.delete(member), 30 * 1000);
             
-            console.log(`Voice channel "${voiceChannel.name}" created by ${member.displayName} (${member.user.username}).`);
+            console.log(`Voice channel "${voiceChannel.name}" created by ${getName(member)} (${member.user.username}).`);
             setTimeout(() => member.voice.setChannel(voiceChannel), 500);
             
             voiceChannel.send( {

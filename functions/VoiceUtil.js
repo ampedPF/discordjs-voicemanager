@@ -18,7 +18,7 @@ module.exports = {
         voiceChannel.permissionOverwrites.edit(interaction.guild.id, { Connect: access })
         .then(vc => {
             const status = access == false ? "private" : "public";
-            console.log(`${interaction.user.tag} has made channel "${voiceChannel.name}" ${status}.`)
+            console.log(`${getName(interaction.member)} (${interaction.user.username}) has made channel "${voiceChannel.name}" ${status}.`)
             interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")], ephemeral: true  });
         })
         .catch(console.error);
@@ -30,16 +30,20 @@ module.exports = {
         if (newName != oldName) {                            
             voiceChannel.edit({ name: newName })
             .then(vc => {
-                    console.log(`${interaction.member.nickname} (${interaction.user.username}) has changed the channel name from "${oldName}" to "${newName}".`)
+                    console.log(`${getName(interaction.member)} (${interaction.user.username}) has changed the channel name from "${oldName}" to "${newName}".`)
                     interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")], ephemeral: true });
                 })
                 .catch(console.error);
         } else {
-            console.log(`${interaction.user.tag} tried to change the channel name but it was already set to "${oldName}".`)
+            console.log(`${getName(interaction.member)} (${interaction.user.username}) tried to change the channel name but it was already set to "${oldName}".`)
             interaction.reply({ embeds: [createEmbed(`Channel name already set to \`${oldName}\`.`, "Red")], ephemeral: true });
         }
 
     },
+
+    getName: (member) => {
+        getName(member);
+    }
 }
     
 
@@ -57,12 +61,12 @@ function setMembersAccessToChannel(interaction, targetMembers, access) {
         targetMembersStr += targetMembersStr.length > 0 ? " " + targetMember.toString() : targetMember.toString();
         voiceChannel.permissionOverwrites.edit(targetMember.id, { Connect: access })
             .then(vc => {
-                console.log(`${interaction.member.nickname} (${interaction.user.username}) has ${action} ${targetMember.nickname} (${targetMember.user.username}) access to channel "${voiceChannel.name}".`);
+                console.log(`${getName(interaction.member)} (${interaction.user.username}) has ${action} ${getName(targetMember)} (${targetMember.user.username}) access to channel "${voiceChannel.name}".`);
         
                 if (targetMember.voice.channel && targetMember.voice.channel.id == voiceChannel.id) {
                     targetMember.voice.setChannel(null)
                         .then(tm => {
-                            console.log(`${targetMember.nickname} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${interaction.member.nickname} (${interaction.user.username}).`)
+                            console.log(`${getName(targetMember)} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${getName(interaction.member)} (${interaction.user.username}).`)
                             //interaction.reply({ embeds: [createEmbed(`${targetMember} has been removed from this channel.`, "Green")], ephemeral: true  });
                         })
                         .catch(console.error);   
@@ -81,4 +85,8 @@ function checkInteractionUserIsNotIn(interaction, targetMembers) {
         }
     }
     return false
+}
+
+function getName(member) {
+    return member.nickname ? member.nickname : member.displayName
 }
