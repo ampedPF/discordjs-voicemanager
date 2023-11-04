@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
-const { setChannelAccess, setChannelName, allowMembersInChannel, denyMemberInChannel } = require("../../functions/VoiceUtil");
+const { setChannelAccess, setChannelName, allowMembersInChannel, denyMemberInChannel, getName } = require("../../functions/VoiceUtil");
 
 
 const slashCommandData = new SlashCommandBuilder()

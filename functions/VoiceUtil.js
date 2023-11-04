@@ -40,6 +40,10 @@ module.exports = {
         }
 
     },
+
+    getName: (member) => {
+        return getName(member);
+    }
 }
     
 
