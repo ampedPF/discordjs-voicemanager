@@ -1,5 +1,7 @@
 const { Events, VoiceState, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
+const { generateName } = require("../../functions/NameUtil");
 const joinToCreateChannelIds = process.env.JOIN_TO_CREATE_CHANNEL_IDS.split(" ");
+const moderatorsRoleId = process.env.MODERATORS_ROLE_ID;
 
 
 module.exports = {
@@ -22,25 +24,35 @@ module.exports = {
         const { member, guild } = newState;
         const oldChannel = oldState.channel;
         const newChannel = newState.channel;
-
+        
         // Delete owned channel
         const ownedChannelId = client.voiceGenerator.get(member.id);
-
+        
         if (ownedChannelId && oldChannel.id == ownedChannelId && (!newChannel || newChannel.id !== ownedChannelId)) {
             client.voiceGenerator.set(member.id, null);
             oldChannel.delete().catch((err) => { console.log(err)} );
-            console.log(`Voice channel "${oldChannel.name}" created by ${member.user.tag} has been deleted.`);
+            console.log(`Voice channel "${oldChannel.name}" created by ${member.displayName} (${member.user.username}) has been deleted.`);
         }
         
         // Create owned channel
         if (oldChannel !== newChannel && newChannel && joinToCreateChannelIds.includes(newChannel.id)) {
+            //console.log("member:", member);
             const voiceChannel = await guild.channels.create({
-                name: member.user.tag,
+                //name: member.displayName,
+                name: generateName(),
                 type: ChannelType.GuildVoice,
                 parent: newChannel.parent,
                 permissionOverwrites: [
+                    { id: moderatorsRoleId, allow: [PermissionFlagsBits.Connect] },
+                    { id: moderatorsRoleId, allow: [PermissionFlagsBits.ManageChannels] },
+                    { id: moderatorsRoleId, allow: [PermissionFlagsBits.ManageMessages] },
+                    
                     { id: member.id, allow: [PermissionFlagsBits.Connect] },
-                    { id: guild.id, deny: [PermissionFlagsBits.Connect] }
+                    { id: member.id, allow: [PermissionFlagsBits.SendMessages] },
+                    { id: member.id, allow: [PermissionFlagsBits.UseApplicationCommands] },
+                    
+                    { id: guild.id, allow: [PermissionFlagsBits.Connect] },
+                    { id: guild.id, allow: [PermissionFlagsBits.ReadMessageHistory] }
                 ]
             });
             
@@ -49,12 +61,13 @@ module.exports = {
             await newChannel.permissionOverwrites.edit(member, { Connect: false });
             setTimeout(() => newChannel.permissionOverwrites.delete(member), 30 * 1000);
             
-            console.log(`Voice channel ${voiceChannel.name} created by ${member.user.tag}.`);
+            console.log(`Voice channel "${voiceChannel.name}" created by ${member.displayName} (${member.user.username}).`);
             setTimeout(() => member.voice.setChannel(voiceChannel), 500);
-
-            //const buttons = [...client.buttons.values()].map(b => b.data);
-            //console.log("buttons:", [...client.buttons.filter(b => b.key.includes("ChannelAccess"))]);
-
+            
+            voiceChannel.send( {
+                content: "> Change channel name",
+                components: [new ActionRowBuilder().addComponents(client.buttons.get("channelNameChangeButton").data)]
+            });
 
             const accessButtons = [...client.buttons.keys()]
                                     .filter((key) => key.includes('channelAccess'))
@@ -63,11 +76,6 @@ module.exports = {
             voiceChannel.send( {
                 content: "> Change channel access",
                 components: [new ActionRowBuilder().addComponents(accessButtons)]
-            });
-            
-            voiceChannel.send( {
-                content: "> Change channel name",
-                components: [new ActionRowBuilder().addComponents(client.buttons.get("channelNameChangeButton").data)]
             });
         }
         

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
-const { setChannelAccess, setChannelName } = require("../../functions/VoiceUtil");
+const { setChannelAccess, setChannelName, allowMembersInChannel, denyMemberInChannel } = require("../../functions/VoiceUtil");
 
 
 const slashCommandData = new SlashCommandBuilder()
@@ -88,12 +88,7 @@ const slashCommandData = new SlashCommandBuilder()
             switch(subCommand){
                 case "allow": {
                     const targetMember = options.getMember("member");
-                    voiceChannel.permissionOverwrites.edit(targetMember.id, { Connect: true })
-                        .then(vc => {
-                            console.log(`${interaction.user.tag} has granted ${targetMember.user.tag} access to channel "${voiceChannel.name}".`)
-                            interaction.reply({ embeds: [createEmbed(`${targetMember} has been granted access to this channel.`, "Green")], ephemeral: true  });
-                        })
-                        .catch(console.error);
+                    allowMembersInChannel(interaction, targetMember);
                 }
                 break;
                 case "deny": {
@@ -104,17 +99,12 @@ const slashCommandData = new SlashCommandBuilder()
                         return;
                     }
 
-                    voiceChannel.permissionOverwrites.edit(targetMember, { Connect: false })
-                        .then(vc => {
-                            console.log(`${interaction.user.tag} has denied ${targetMember.user.tag} access to channel "${voiceChannel.name}".`)
-                            interaction.reply({ embeds: [createEmbed(`${targetMember} has been denied access to this channel.`, "Green")], ephemeral: true  });
-                        })
-                        .catch(console.error);
+                    denyMemberInChannel(interaction, targetMember);
                     
                     if (targetMember.voice.channel && targetMember.voice.channel.id == voiceChannel.id) {
                         targetMember.voice.setChannel(null)
                             .then(tm => {
-                                console.log(`${targetMember.user.tag} has been removed from channel "${voiceChannel.name}" by ${interaction.user.tag}.`)
+                                console.log(`${targetMember.nickname} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${interaction.member.nickname} (${interaction.user.username}).`)
                                 interaction.reply({ embeds: [createEmbed(`${targetMember} has been removed from this channel.`, "Green")], ephemeral: true  });
                             })
                             .catch(console.error);   

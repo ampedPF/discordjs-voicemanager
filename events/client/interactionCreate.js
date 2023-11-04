@@ -1,4 +1,5 @@
 const { Events, InteractionType, MessageInteraction, Client } = require('discord.js');
+const { allowMembersInChannel, denyMembersInChannel } = require("../../functions/VoiceUtil");
 
 
 module.exports = {
@@ -30,6 +31,15 @@ module.exports = {
             if (!modal) return interaction.reply('This modal does not exist.');
     
             modal.execute(client, interaction);
+        } else if (interaction.isUserSelectMenu()) {
+            if (interaction.customId == 'inviteUsersSelectMenu') {
+                const fetchedMembers = await interaction.guild.members.fetch( { user: interaction.values});
+                allowMembersInChannel(interaction, fetchedMembers);
+            }
+            else if (interaction.customId == 'denyUsersSelectMenu') {
+                const fetchedMembers = await interaction.guild.members.fetch( { user: interaction.values});
+                denyMembersInChannel(interaction, fetchedMembers);
+            }
         }
     },
 };

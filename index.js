@@ -22,8 +22,8 @@ client.modals = new Collection();
 client.voiceGenerator = new Collection();
 
 
-// Load commands and events. ('ready' event send the commands to the discord server)
-['CommandUtil', 'ComponentUtil', 'EventUtil'].forEach(handler => require(path.join(appRoot, "handlers", handler))(client));
+// Load commands and events. ('ready' event send the commands to the discord server) | 'CommandUtil' removed to clear application commands
+['ComponentUtil', 'EventUtil'].forEach(handler => require(path.join(appRoot, "handlers", handler))(client));
 
 
 // Handle process errors

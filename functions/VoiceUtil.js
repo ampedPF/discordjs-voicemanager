@@ -1,13 +1,16 @@
-const { SlashCommandBuilder, CommandInteraction, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-    allowMemberInChannel: (interaction, voiceChannel, targetMember) => {
-    voiceChannel.permissionOverwrites.edit(targetMember.id, { Connect: true })
-                        .then(vc => {
-                            console.log(`${interaction.user.tag} has granted ${targetMember.user.tag} access to channel "${voiceChannel.name}".`)
-                            interaction.reply({ embeds: [createEmbed(`${targetMember} has been granted access to this channel.`, "Green")], ephemeral: true  });
-                        })
-                        .catch(console.error);
+    allowMembersInChannel: (interaction, targetMembers) => {
+        //console.log(interaction.guild.members);
+        setMembersAccessToChannel(interaction, targetMembers, true);
+    },
+    denyMembersInChannel: (interaction, targetMembers) => {
+        if(checkInteractionUserIsNotIn(interaction, targetMembers)) {
+            interaction.reply({ embeds: [createEmbed(`You cannot deny your access to your own channel.`, "Red")], ephemeral: true  });
+            return;
+        }
+        setMembersAccessToChannel(interaction, targetMembers, false);
     },
     
     setChannelAccess: (interaction, access) => {
@@ -26,8 +29,8 @@ module.exports = {
         const oldName = voiceChannel.name;
         if (newName != oldName) {                            
             voiceChannel.edit({ name: newName })
-                .then(vc => {
-                    console.log(`${interaction.user.tag} has changed the channel name from "${oldName}" to "${newName}".`)
+            .then(vc => {
+                    console.log(`${interaction.member.nickname} (${interaction.user.username}) has changed the channel name from "${oldName}" to "${newName}".`)
                     interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")], ephemeral: true });
                 })
                 .catch(console.error);
@@ -40,6 +43,42 @@ module.exports = {
 }
     
 
-function createEmbed(description, color){
+function createEmbed(description, color) {
     return new EmbedBuilder().setDescription(description).setColor(color);
+}
+
+function setMembersAccessToChannel(interaction, targetMembers, access) {
+    const voiceChannel = interaction.member.voice.channel;
+    const modal = targetMembers.size > 1 ? "have" : "has";
+    const action = access == false ? "denied" : "granted";
+    let targetMembersStr = "";
+
+    for (const [key, targetMember] of targetMembers) {
+        targetMembersStr += targetMembersStr.length > 0 ? " " + targetMember.toString() : targetMember.toString();
+        voiceChannel.permissionOverwrites.edit(targetMember.id, { Connect: access })
+            .then(vc => {
+                console.log(`${interaction.member.nickname} (${interaction.user.username}) has ${action} ${targetMember.nickname} (${targetMember.user.username}) access to channel "${voiceChannel.name}".`);
+        
+                if (targetMember.voice.channel && targetMember.voice.channel.id == voiceChannel.id) {
+                    targetMember.voice.setChannel(null)
+                        .then(tm => {
+                            console.log(`${targetMember.nickname} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${interaction.member.nickname} (${interaction.user.username}).`)
+                            //interaction.reply({ embeds: [createEmbed(`${targetMember} has been removed from this channel.`, "Green")], ephemeral: true  });
+                        })
+                        .catch(console.error);   
+                }
+            })
+            .catch(console.error);
+    };
+    voiceChannel.send({ embeds: [createEmbed(`${targetMembersStr} ${modal} been ${action} access to this channel.`, "Green")], ephemeral: true  });
+    interaction.message.delete();
+}
+
+function checkInteractionUserIsNotIn(interaction, targetMembers) {
+    for (const [key, targetMember] of targetMembers) {
+        if(interaction.member == targetMember) {
+            return true
+        }
+    }
+    return false
 }
