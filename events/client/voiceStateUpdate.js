@@ -62,10 +62,6 @@ module.exports = {
             await newChannel.permissionOverwrites.edit(member, { Connect: false });
             setTimeout(() => newChannel.permissionOverwrites.delete(member), 30 * 1000);
             
-            console.log("---------------------member------------------")
-            console.log(member)
-            console.log("---------------------end------------------")
-
             console.log(`Voice channel "${voiceChannel.name}" created by ${getName(member)} (${member.user.username}).`);
             setTimeout(() => member.voice.setChannel(voiceChannel), 500);
             
