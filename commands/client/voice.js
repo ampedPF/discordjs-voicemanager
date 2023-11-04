@@ -104,7 +104,7 @@ const slashCommandData = new SlashCommandBuilder()
                     if (targetMember.voice.channel && targetMember.voice.channel.id == voiceChannel.id) {
                         targetMember.voice.setChannel(null)
                             .then(tm => {
-                                console.log(`${targetMember.nickname} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${interaction.member.nickname} (${interaction.user.username}).`)
+                                console.log(`${getName(targetMember)} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${getName(interaction.member)} (${interaction.user.username}).`)
                                 interaction.reply({ embeds: [createEmbed(`${targetMember} has been removed from this channel.`, "Green")], ephemeral: true  });
                             })
                             .catch(console.error);   
