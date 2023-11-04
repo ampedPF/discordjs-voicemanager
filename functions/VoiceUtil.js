@@ -19,7 +19,7 @@ module.exports = {
         .then(vc => {
             const status = access == false ? "private" : "public";
             console.log(`${getName(interaction.member)} (${interaction.user.username}) has made channel "${voiceChannel.name}" ${status}.`)
-            interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")], ephemeral: true  });
+            interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")]});
         })
         .catch(console.error);
     },
@@ -31,7 +31,7 @@ module.exports = {
             voiceChannel.edit({ name: newName })
             .then(vc => {
                     console.log(`${getName(interaction.member)} (${interaction.user.username}) has changed the channel name from "${oldName}" to "${newName}".`)
-                    interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")], ephemeral: true });
+                    interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")]});
                 })
                 .catch(console.error);
         } else {
@@ -67,7 +67,6 @@ function setMembersAccessToChannel(interaction, targetMembers, access) {
                     targetMember.voice.setChannel(null)
                         .then(tm => {
                             console.log(`${getName(targetMember)} (${targetMember.user.username}) has been removed from channel "${voiceChannel.name}" by ${getName(interaction.member)} (${interaction.user.username}).`)
-                            //interaction.reply({ embeds: [createEmbed(`${targetMember} has been removed from this channel.`, "Green")], ephemeral: true  });
                         })
                         .catch(console.error);   
                 }
