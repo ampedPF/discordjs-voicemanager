@@ -39,6 +39,17 @@ module.exports = {
         }
 
     },
+    
+    setChannelVisibility: (interaction, visibility) => {
+        const voiceChannel = interaction.member.voice.channel;
+        voiceChannel.permissionOverwrites.edit(interaction.guild.id, { ViewChannel: visibility })
+        .then(vc => {
+            const status = visibility == false ? "invisible" : "visible";
+            console.log(`${getName(interaction.member)} (${interaction.user.username}) has made channel "${voiceChannel.name}" ${status}.`)
+            interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")], ephemeral: true});
+        })
+        .catch(console.error);
+    },
 
     getName: (member) => {
         return getName(member);
