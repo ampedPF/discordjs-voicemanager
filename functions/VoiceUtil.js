@@ -1,8 +1,7 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, PermissionsBitField  } = require("discord.js");
 
 module.exports = {
     allowMembersInChannel: (interaction, targetMembers) => {
-        //console.log(interaction.guild.members);
         setMembersAccessToChannel(interaction, targetMembers, true);
     },
     denyMembersInChannel: (interaction, targetMembers) => {
@@ -19,7 +18,7 @@ module.exports = {
         .then(vc => {
             const status = access == false ? "private" : "public";
             console.log(`${getName(interaction.member)} (${interaction.user.username}) has made channel "${voiceChannel.name}" ${status}.`)
-            interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")]});
+            interaction.reply({ embeds: [createEmbed(`This channel is now ${status}.`, "Green")], ephemeral: true});
         })
         .catch(console.error);
     },
@@ -31,7 +30,7 @@ module.exports = {
             voiceChannel.edit({ name: newName })
             .then(vc => {
                     console.log(`${getName(interaction.member)} (${interaction.user.username}) has changed the channel name from "${oldName}" to "${newName}".`)
-                    interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")]});
+                    interaction.reply({ embeds: [createEmbed(`Channel has been set to \`${newName}\`.`, "Green")], ephemeral: true});
                 })
                 .catch(console.error);
         } else {
