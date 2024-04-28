@@ -67,7 +67,11 @@ module.exports = {
             
             voiceChannel.send( {
                 content: "> Change channel name",
-                components: [new ActionRowBuilder().addComponents(client.buttons.get("channelNameChangeButton").data)]
+                components: [
+                    new ActionRowBuilder().addComponents(
+                        client.buttons.get("channelNameChangeButton").data
+                    )
+                ]
             });
 
             const accessButtons = [...client.buttons.keys()]

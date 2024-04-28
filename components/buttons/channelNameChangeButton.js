@@ -4,8 +4,8 @@ const channelNameChangeModal = require("../modals/channelNameChangeModal");
 
 const buttonBuilderData = new ButtonBuilder()
     .setCustomId('channelNameChangeButton')
-    .setLabel("Change Name")
-    .setStyle(ButtonStyle.Primary);
+    .setLabel("Change Channel Name")
+    .setStyle(ButtonStyle.Success);
 
                                     
 /**
