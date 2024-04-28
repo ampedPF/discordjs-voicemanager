@@ -1,4 +1,4 @@
-const { Events, VoiceState, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
+const { Events, VoiceState, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require("discord.js");
 const { generateName } = require("../../functions/NameUtil");
 const { getName } = require("../../functions/VoiceUtil");
 const joinToCreateChannelIds = process.env.JOIN_TO_CREATE_CHANNEL_IDS.split(" ");
@@ -73,14 +73,35 @@ module.exports = {
                     )
                 ]
             });
-
-            const accessButtons = [...client.buttons.keys()]
-                                    .filter((key) => key.includes('channelAccess'))
-                                    .map(set => client.buttons.get(set).data);
             
             voiceChannel.send( {
-                content: "> Change channel access",
-                components: [new ActionRowBuilder().addComponents(accessButtons)]
+                content: "> Set channel access",
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        client.buttons.get("channelAccessPublicButton").data,
+                        client.buttons.get("channelAccessPrivateButton").data
+                    ])
+                ]
+            });
+            
+            voiceChannel.send( {
+                content: "> Set channel visibility",
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        client.buttons.get("channelVisibilityEnableButton").data,
+                        client.buttons.get("channelVisibilityDisableButton").data
+                    ])
+                ]
+            });
+            
+            voiceChannel.send( {
+                content: "> Manage members' access",
+                components: [
+                    new ActionRowBuilder().addComponents([
+                        client.buttons.get("channelAccessInviteButton").data,
+                        client.buttons.get("channelAccessDenyButton").data
+                    ])
+                ]
             });
         }
         
